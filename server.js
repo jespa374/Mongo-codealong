@@ -7,11 +7,11 @@ const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/books"
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.Promise = Promise;
 
-const Author = mongoose.model('Author', {
+const Author = new mongoose.model('Author', {
   name: String
 });
 
-const Book = mongoose.model('Book', {
+const Book = new mongoose.model('Book', {
   title: String,
   author: {
     type: mongoose.Schema.Types.ObjectId,
