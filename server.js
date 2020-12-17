@@ -50,16 +50,16 @@ if (process.env.RESET_DATABASE) {
 // overridden when starting the server. For example:
 //
 //   PORT=9000 npm start
-const port = process.env.PORT || 8080
-const app = express()
+const port = process.env.PORT || 8080;
+const app = express();
 
 // Add middlewares to enable cors and json body parsing
-app.use(cors())
-app.use(bodyParser.json())
+app.use(cors());
+app.use(bodyParser.json());
 
 // Start defining your routes here
 app.get('/', (req, res) => {
-  res.send('Hello world')
+  res.send('Hello world');
 });
 
 app.get('/authors', async(req, res) => {
@@ -67,11 +67,24 @@ app.get('/authors', async(req, res) => {
   res.json(authors);
 });
 
+app.get('/authors/:id', async (req, res) => {
+  const author =  await Author.findById(req.params.id);
+  if (author) {
+    res.json(author);
+  } else {
+    res.status(404).json({ error: 'Author not found' });
+  }
+});
+
 app.get('/authors/:id/books', async (req, res) => {
   const author = await Author.findById(req.params.id);
-  const books = await Book.find({ author: mongoose.Types.ObjectId(author.id) })
-
-  res.json(books);
+  if (author) {
+    const books = await Book.find({ author: mongoose.Types.ObjectId(author.id) });
+    res.json(books);
+  } else {
+    res.status(404).json({ error: 'Author not found' });
+  }
+  
 });
 
 app.get('/books', async(req, res) => {
@@ -84,4 +97,4 @@ app.get('/books', async(req, res) => {
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
-})
+});
